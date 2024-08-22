@@ -15,7 +15,7 @@ public class Nedboer {
     public static void main(String[] args)
     {
         bedsteTreFerieUger();
-        bedsteFerieUgerStart(3);
+        bedsteFerieUgerStart(1);
     }
     
     public static int bedsteTreFerieUger() {
@@ -48,16 +48,13 @@ public class Nedboer {
         for(int i = 0; i < nedboerPrUge.length - antal; i++)
         {
             int currentRainfall = 0;
-            for(int x = antal; x <= 0; x--)
-            {
-                currentRainfall += nedboerPrUge[x];
-            }
-            if(currentRainfall < minRainfall)
-            {
+            for (int x = 0; x < antal; x++) {
+            currentRainfall += nedboerPrUge[i + x];
+        }
 
+            if (currentRainfall < minRainfall) {
                 minRainfall = currentRainfall;
                 bestStartIndex = i;
-                System.out.println("inde i loopet" + bestStartIndex);
             }
         }
         System.out.println(bestStartIndex);
