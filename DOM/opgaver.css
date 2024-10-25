@@ -1,0 +1,20 @@
+.red {
+    color: red;
+}
+
+p {
+    font-size: 1.2em;
+    color: red;
+}
+
+h1 {
+
+}
+
+h2 {
+    color: blue;
+}
+
+ul {
+    width: fit-content;
+}
