@@ -34,6 +34,9 @@ public class AdjacencyListGraph<V> implements Graph<V> {
         return size / 2;
     }
 
+
+
+
     @Override
     /** Return the vertices in the graph */
     public List<V> vertices() {

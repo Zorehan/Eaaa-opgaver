@@ -1,11 +1,21 @@
 package graphimplementationStuderende;
 
+import java.util.Arrays;
+
 public class App {
+    public static int[] funnyhaha = {2,8,5,4};
+
+    public static int longestSquareStreak(int[] nums) {
+        System.out.println(Arrays.stream(nums).sorted().toArray().toString());
+        return 0;
+    }
 
     public static void main(String[] args) {
+
+
+
         EdgeListGraph<Integer> graph = new EdgeListGraph<>();
 
-        // Add vertices
         graph.addVertex(15);
         graph.addVertex(6);
         graph.addVertex(66);
@@ -41,5 +51,7 @@ public class App {
         graph.printGraph();
 
         graph.areAdjacent(6,123);
+
+        longestSquareStreak(funnyhaha);
     }
 }

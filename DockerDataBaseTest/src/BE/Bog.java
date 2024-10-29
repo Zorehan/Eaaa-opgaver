@@ -51,6 +51,6 @@ public class Bog {
     public String toString()
     {
         String returnes = "Bogen: " + titel + " udgivet i  " + udgivelseAar + "\n";
-        return returnes;
+        return returnes;    
     }
 }
