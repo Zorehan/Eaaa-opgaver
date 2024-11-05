@@ -52,6 +52,7 @@ public class GraphAlgortihms {
         System.out.println(dfs(graph,123));
         System.out.println(bfs(graph, 123));
         System.out.println(connected(graph));
+        System.out.println(mst(graph));
     }
 
     /**
@@ -87,7 +88,7 @@ public class GraphAlgortihms {
      */
     public static <V> boolean connected(Graph<V> graph) {
         if (graph.numVertices() == 0) {
-            System.out.println("No edges in current graph");
+            System.out.println("No nodes in graph");
             return false;
 
         }
@@ -109,18 +110,69 @@ public class GraphAlgortihms {
         }
     }
 
-
-    /*Opgave 6
-
-
-     */
     /**
      * Returnerer en mængde af grafens kanter der udgør det letteste udspændende træ for grafen.
      * Grafen er en simpel vægtet graf
      */
-    public static <V> Set<Edge> mst(Graph<V> graph) {
-        // TODO Opgave 7
-        return null;
+
+
+    private static class DisjointSet<V> {
+        private final Map<V, V> parent = new HashMap<>();
+        private final Map<V, Integer> rank = new HashMap<>();
+
+        public void makeSet(V v) {
+            parent.put(v, v);
+            rank.put(v, 0);
+        }
+
+        public V find(V v) {
+            if (!v.equals(parent.get(v))) {
+                parent.put(v, find(parent.get(v)));
+            }
+            return parent.get(v);
+        }
+
+        public void union(V v1, V v2) {
+            V root1 = find(v1);
+            V root2 = find(v2);
+
+            if (!root1.equals(root2)) {
+                if (rank.get(root1) > rank.get(root2)) {
+                    parent.put(root2, root1);
+                } else if (rank.get(root1) < rank.get(root2)) {
+                    parent.put(root1, root2);
+                } else {
+                    parent.put(root2, root1);
+                    rank.put(root1, rank.get(root1) + 1);
+                }
+            }
+        }
+
+        public boolean connected(V v1, V v2) {
+            return find(v1).equals(find(v2));
+        }
+    }
+
+    public static <V> Set<Edge<V>> mst(Graph<V> graph) {
+        Set<Edge<V>> mstEdges = new HashSet<>();
+        PriorityQueue<Edge<V>> edgeQueue = new PriorityQueue<>(graph.edges());
+        DisjointSet<V> disjointSet = new DisjointSet<>();
+
+        for (V vertex : graph.vertices()) {
+            disjointSet.makeSet(vertex);
+        }
+
+        while (mstEdges.size() < graph.numVertices() - 1 && !edgeQueue.isEmpty()) {
+            Edge<V> edge = edgeQueue.poll();
+            V u = edge.getU();
+            V v = edge.getV();
+
+            if (!disjointSet.connected(u, v)) {
+                mstEdges.add(edge);
+                disjointSet.union(u, v);
+            }
+        }
+        return mstEdges;
     }
 
 }
