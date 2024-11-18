@@ -1,0 +1,19 @@
+use Securitytest
+
+CREATE TABLE Konto (
+regNr char(4),
+ktoNr char(7),
+tekst CHAR(20),
+saldo decimal(10,2),
+renteIndln decimal(4,2),
+renteUdln decimal(4,2),
+PRIMARY KEY (regNr, ktoNr))
+insert into Konto (regNr, ktoNr, tekst, saldo, renteIndln, renteUdln) values
+( 1234, 1234567, 'L nkonto', 10000.00, 1.2, 5.2),
+( 1234, 1231236, 'L nkonto', 5000.00, 1.2, 5.2),
+( 1234, 1357967, 'L nkonto', 12000.00, 1.2, 5.2),
+( 1216, 1256788, 'L nkonto', 15000.00, 1.2, 5.2),
+( 1216, 2234567, 'Boligl n', 2550000.00, 1.2, 5.2),
+( 1234, 2231236, 'Boligl n', 3175000.00, 1.2, 5.2)
+select *
+from Konto
