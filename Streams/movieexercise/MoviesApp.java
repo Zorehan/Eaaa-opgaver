@@ -46,14 +46,14 @@ public class MoviesApp {
         long countStartingWithH = movieList.stream()
                 .filter(movie -> movie.getTitle().startsWith("H"))
                 .count();
-        System.out.println("Number of movies starting with 'H': " + countStartingWithH);
+        System.out.println("antallet af film der starter med H: " + countStartingWithH);
 
         //Film der starter med X
 
         List<Movie> movieStartingWithX = movieList.stream().filter(movie -> movie.getTitle().startsWith("X")).toList();
         for(Movie movie: movieStartingWithX)
         {
-            System.out.println(movie.getTitle());
+            System.out.println("film der starter med X : " + movie.getTitle());
         }
 
         // The number of films where the director is also an actor
@@ -62,7 +62,7 @@ public class MoviesApp {
                 .filter(movie -> movie.getDirectors().stream()
                         .anyMatch(director -> movie.getActors().contains(director)))
                 .count();
-        System.out.println("Number of films where the director is also an actor: " + directorAlsoActorCount);
+        System.out.println("film hvor produceren også er en skuespiller: " + directorAlsoActorCount);
 
         //The number of actors in the film with the most actors
 
@@ -71,26 +71,24 @@ public class MoviesApp {
                 .max()
                 .orElse(0);
 
-        System.out.println(maxActorsCount);
+        System.out.println("antallet af skuespillere i filmen med flest skuespillere: " + maxActorsCount);
 
         // The title of the film with the most actors
         movieList.stream()
                 .max(Comparator.comparingInt(movie -> movie.getActors().size()))
-                .ifPresent(movie -> System.out.println("The film with the most actors: " + movie.getTitle()));
+                .ifPresent(movie -> System.out.println("film med flest skuespillere: " + movie.getTitle()));
 
 
         //Number of films divided by first letter in the film title
-        Map<Character, Long> filmsByFirstLetter = movieList.stream()
+        Map<Character, Long> filmsByFirstLetterWithSpace = movieList.stream()
+                .filter(movie -> movie.getTitle().length() > 1 && movie.getTitle().charAt(1) == ' ')
                 .collect(Collectors.groupingBy(movie -> movie.getTitle().charAt(0), Collectors.counting()));
-        System.out.println("Number of films divided by first letter in the title:");
-        filmsByFirstLetter.forEach((letter, count) -> System.out.println(letter + ": " + count));
 
-        // Number of movies whose title starts with "The "
-        long countStartingWithThe = movieList.stream().filter(movie -> movie.getTitle().startsWith("The ")).count();
-        System.out.println(countStartingWithThe);
+        System.out.println("Number of films divided by first letter (followed by a space):");
+        filmsByFirstLetterWithSpace.forEach((letter, count) -> System.out.println(letter + ": " + count));
 
 
-//
+
     }
 
 
