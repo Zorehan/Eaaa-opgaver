@@ -1,5 +1,8 @@
 package personcollection;
 
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+
 public class PersonCollection implements PersonCollectionI{
     // array to store the persons in;
     // persons have indices in [0, size-1]
@@ -7,12 +10,14 @@ public class PersonCollection implements PersonCollectionI{
     // number of entries in the list;
     // index of the first empty slot in items
     private int size;
+    private int modification;
 
     /**
      * Creates an Collection with capacity 16.
      */
     public PersonCollection() {
         this(16);
+        this.modification = 0;
     }
 
     /**
@@ -23,6 +28,7 @@ public class PersonCollection implements PersonCollectionI{
         Person[] temp = new Person[capacity];
         this.persons = temp;
         this.size = 0;
+        this.modification = 0;
     }
 
     /**
@@ -35,6 +41,7 @@ public class PersonCollection implements PersonCollectionI{
 
         this.persons[this.size] = person;
         this.size++;
+        modification++;
     }
 
     /**
@@ -50,7 +57,7 @@ public class PersonCollection implements PersonCollectionI{
         }
         this.persons[index] = person;
         this.size++;
-
+        modification++;
     }
 
     /**
@@ -68,6 +75,7 @@ public class PersonCollection implements PersonCollectionI{
         }
         this.persons[this.size - 1] = null;
         this.size--;
+        modification++;
         return person;
     }
 
@@ -121,6 +129,7 @@ public class PersonCollection implements PersonCollectionI{
             this.persons[i] = null;
         }
         this.size = 0;
+        modification++;
     }
 
     @Override
@@ -138,9 +147,44 @@ public class PersonCollection implements PersonCollectionI{
         return sb.toString();
     }
 
-    // -------------------------------------------------------------------------
-    // Ex. Iterator
+    private class PersonIterator implements Iterator<Person> {
+        private int currentIndex = 0;
+        private boolean canRemove = false;
+        private final int modificationMax = modification;
 
-    // TODO
+        @Override
+        public boolean hasNext() {
+            return currentIndex < size;
+        }
+
+        @Override
+        public Person next() {
+            if(modificationMax != modification)
+            {
+                throw new ConcurrentModificationException();
+            }
+            canRemove = true;
+            return persons[currentIndex++];
+        }
+
+        @Override
+        public void remove() {
+            if(modificationMax != modification)
+            {
+                throw new ConcurrentModificationException();
+            }
+            for (int i = currentIndex - 1; i < size - 1; i++) {
+                persons[i] = persons[i + 1];
+            }
+            persons[--size] = null;
+            currentIndex--;
+            canRemove = false;
+        }
+    }
+
+    public Iterator<Person> iterator2()
+    {
+        return new PersonIterator();
+    }
 
 }

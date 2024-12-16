@@ -1,10 +1,15 @@
 package personcollection;
 
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class PersonCollectionLink implements PersonCollectionI{
     // start is a refrerence to a sentinel in the linked list of persons
     private Node start;
     // number of entries in the list;
     private int size;
+    private int modification;
 
     /**
      * Creates an Collection with capacity 16.
@@ -12,6 +17,7 @@ public class PersonCollectionLink implements PersonCollectionI{
     public PersonCollectionLink() {
         start = new Node();
         size = 0;
+        modification = 0;
     }
 
 
@@ -28,6 +34,7 @@ public class PersonCollectionLink implements PersonCollectionI{
        newNode.person = person;
        temp.next = newNode;
        this.size++;
+       modification++;
     }
 
     /**
@@ -47,6 +54,7 @@ public class PersonCollectionLink implements PersonCollectionI{
         newNode.next = temp.next;
         temp.next = newNode;
         this.size++;
+        modification++;
     }
 
     /**
@@ -65,6 +73,7 @@ public class PersonCollectionLink implements PersonCollectionI{
         Person person = temp.next.person;
         temp.next = temp.next.next;
         this.size--;
+        modification++;
         return person;
     }
 
@@ -121,6 +130,7 @@ public class PersonCollectionLink implements PersonCollectionI{
     public void clear() {
         start = new Node();
         this.size = 0;
+        modification++;
     }
 
     @Override
@@ -145,9 +155,52 @@ public class PersonCollectionLink implements PersonCollectionI{
         Person person;
     }
 
-    // -------------------------------------------------------------------------
-    // Ex. Iterator
+    private class PersonLinkIterator implements Iterator<Person> {
+        private Node current = start.next;
+        private Node previous = null;
+        private final int modificationMax = modification;
 
-    // TODO
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
 
+        @Override
+        public Person next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            if(modificationMax != modification)
+            {
+                throw new ConcurrentModificationException();
+            }
+            Person person = current.person;
+            previous = current;
+            current = current.next;
+            return person;
+        }
+
+        @Override
+        public void remove() {
+
+            if(modificationMax != modification)
+            {
+                throw new ConcurrentModificationException();
+            }
+
+            Node temp = start;
+            while (temp.next != previous) {
+                temp = temp.next;
+            }
+            temp.next = previous.next;
+            previous = null;
+            size--;
+        }
+    }
+
+    public Iterator<Person> iterator() {
+        return new PersonLinkIterator();
+    }
 }
+
+
